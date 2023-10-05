@@ -1,0 +1,108 @@
+#include <cmath>
+#include <iomanip>
+#include <iostream>
+#include <random>
+#include <string>
+
+void roll();
+void robotRoll();
+void turnChange();
+void pointCount();
+void addCTP();
+bool checkWin();
+
+
+using namespace std;
+
+int tempPoints, TP = 0, CTP = 0, goal = 100, CompMax;
+bool first = true;
+string name;
+
+void WINNERWINNERCHICKENDINNER() {
+  if (TP >= 100) {
+    pointCount();
+    cout << endl << " YAY YOU WON THE GAME!" << endl;
+    exit(0);
+  } else if(CTP >= 100){
+    pointCount();
+    cout << endl << " >:( HOW COULD YOU LOSE!" << endl;
+    exit(0);
+  }
+}
+
+void pointCount() {
+  cout << endl
+       << "- - - SCOREBOARD - - -" << endl
+       << name << " has " << TP << " points." << endl;
+  cout << "The AI has " << CTP << " points." << endl << endl;
+}
+
+void roll() {
+  int roll = (rand() % 6 + 1);
+  if (roll == 1) {
+    tempPoints = 0;
+    cout << "Roll hit 1, " << name << "'s turn ended." << endl;
+    pointCount();
+    robotRoll();
+  } else {
+    tempPoints += roll;
+    cout << "Roll hit " << roll << ",  " << name << "'s turn continues" << endl;
+    turnChange();
+  }
+}
+
+void robotRoll() {
+  if (tempPoints >= CompMax) {
+    cout << "AI has hit max points." << endl;
+    addCTP();
+    pointCount();
+    roll();
+  } else {
+    int CRoll = (rand() % 6 + 1);
+    if (CRoll == 1) {
+      tempPoints = 0;
+      cout << "Roll hit 1, AI turn ended." << endl;
+      addCTP();
+      pointCount();
+      roll();
+    } else {
+      tempPoints += CRoll;
+      cout << "Roll hit " << CRoll << ", AI turn continues." << endl;
+      robotRoll();
+    }
+  }
+}
+
+void addCTP() {
+  CTP += tempPoints;
+  WINNERWINNERCHICKENDINNER();
+  tempPoints = 0;
+}
+
+void turnChange() {
+  char choice;
+  bool value = false;
+  cout << "Would you like to roll again (Y/N)? ";
+  cin >> choice;
+  if (choice == ('Y')) {
+    value = true;
+  }
+  if (value) {
+    roll();
+  } else {
+    TP += tempPoints;
+    tempPoints = 0;
+    WINNERWINNERCHICKENDINNER();
+    pointCount();
+    robotRoll();
+  }
+}
+
+int main() {
+  cout << "Amount of points for the computer to hold: ";
+  cin >> CompMax;
+  cout << "Player name: ";
+  cin >> name;
+  cout << "FIRST TO 100 POINTS WINS, BEGIN!" << endl << endl;
+  roll();
+}
